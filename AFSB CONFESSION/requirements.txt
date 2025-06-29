@@ -1,0 +1,5 @@
+Flask
+Pillow
+instagrapi
+python-dotenv
+openai
