@@ -1,5 +1,8 @@
 Flask
-Pillow
+gunicorn
+pillow
 instagrapi
-python-dotenv
 openai
+requests
+transformers
+torch
