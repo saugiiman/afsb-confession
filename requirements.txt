@@ -3,3 +3,5 @@ Pillow
 instagrapi
 python-dotenv
 openai
+gunicorn
+transformers
