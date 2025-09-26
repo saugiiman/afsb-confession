@@ -8,24 +8,22 @@
 </head>
 <body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500">
 <div class="text-center w-full max-w-md bg-white/90 backdrop-blur-lg rounded-2xl shadow-lg p-6">
-  <h1 class="text-3xl font-bold text-gray-800 mb-4">Anonymous Confessions 💌</h1>
-  <p class="text-gray-600 mb-6">Enter your Instagram username to get your link</p>
-  
-  <form id="usernameForm" class="space-y-4">
-    <input type="text" id="username" placeholder="Enter your Instagram username"
-      class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500"
-      required>
-    <button type="submit"
-      class="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl font-semibold shadow-md transition">
-      Get My Link 🔗
-    </button>
-  </form>
+<h1 class="text-3xl font-bold text-gray-800 mb-4">Anonymous Confessions 💌</h1>
+<p class="text-gray-600 mb-6">Enter your Instagram username to get your link</p>
 
-  <div id="linkBox" class="hidden mt-6">
-    <p class="text-gray-700 font-medium">Your confession link:</p>
-    <a id="confessionLink" href="#" class="block mt-2 text-blue-600 underline break-all"></a><br>
-    <a id="dashboardLink" href="#" class="block mt-2 text-purple-600 underline break-all">View your dashboard</a>
-  </div>
+<form id="usernameForm" class="space-y-4">
+<input type="text" id="username" placeholder="Enter your Instagram username"
+class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500" required>
+<button type="submit" class="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl font-semibold shadow-md transition">
+Get My Link 🔗
+</button>
+</form>
+
+<div id="linkBox" class="hidden mt-6">
+<p class="text-gray-700 font-medium">Your confession link:</p>
+<a id="confessionLink" href="#" class="block mt-2 text-blue-600 underline break-all"></a><br>
+<a id="dashboardLink" href="#" class="block mt-2 text-purple-600 underline break-all">View your dashboard</a>
+</div>
 </div>
 
 <script>
