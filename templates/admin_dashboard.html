@@ -12,15 +12,15 @@
 <a href="/admin/logout" class="block text-right text-red-600 underline mb-4">Logout</a>
 
 {% if messages %}
-  <div class="space-y-4">
-    {% for user, msg in messages %}
-      <div class="p-4 bg-gray-100 rounded-xl shadow">
-        <span class="font-semibold">@{{ user }}:</span> {{ msg }}
-      </div>
-    {% endfor %}
-  </div>
+<div class="space-y-4">
+{% for user, msg in messages %}
+<div class="p-4 bg-gray-100 rounded-xl shadow">
+<span class="font-semibold">@{{ user }}:</span> {{ msg }}
+</div>
+{% endfor %}
+</div>
 {% else %}
-  <p class="text-gray-600 text-center">No messages yet 🤔</p>
+<p class="text-gray-600 text-center">No messages yet 🤔</p>
 {% endif %}
 </div>
 </body>
