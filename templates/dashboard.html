@@ -11,13 +11,13 @@
 <h2 class="text-2xl font-bold text-gray-800 mb-4">@{{ username }}’s Confessions 💌</h2>
 
 {% if messages %}
-  <div class="space-y-4">
-    {% for msg in messages %}
-      <div class="p-4 bg-gray-100 rounded-xl shadow">{{ msg }}</div>
-    {% endfor %}
-  </div>
+<div class="space-y-4">
+{% for msg in messages %}
+<div class="p-4 bg-gray-100 rounded-xl shadow">{{ msg }}</div>
+{% endfor %}
+</div>
 {% else %}
-  <p class="text-gray-600">No confessions yet 🤔</p>
+<p class="text-gray-600">No confessions yet 🤔</p>
 {% endif %}
 </div>
 </body>
