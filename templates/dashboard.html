@@ -9,8 +9,16 @@
 <div class="confessions">
     {% for msg in messages %}
     <div class="confession-card">
+        <!-- AI-generated image -->
         <img src="{{ msg.image }}" width="300">
+
+        <!-- Text -->
         <p>{{ msg.text }}</p>
+
+        <!-- Download button -->
+        <a href="{{ msg.image }}" download="confession.png">
+            <button>Download Image</button>
+        </a>
     </div>
     {% endfor %}
 </div>
