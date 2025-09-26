@@ -1,80 +1,59 @@
 import os
 import json
-from flask import Flask, render_template, request, redirect, url_for, session
+import openai
 import firebase_admin
 from firebase_admin import credentials, firestore
+from flask import Flask, request, render_template, redirect, url_for
 
-# ---------------- Flask setup ----------------
-app = Flask(__name__, template_folder="../templates", static_folder="../static")
-app.secret_key = "supersecretkey"
+app = Flask(__name__)
 
-# ---------------- Firebase setup ----------------
+# Firebase setup
 cred_json = os.environ.get("FIREBASE_CREDENTIALS")
-if not cred_json:
-    raise Exception("FIREBASE_CREDENTIALS environment variable not set!")
-
-try:
-    cred_dict = json.loads(cred_json)
-except json.JSONDecodeError as e:
-    raise Exception(f"Failed to parse FIREBASE_CREDENTIALS: {e}")
-
+cred_dict = json.loads(cred_json)
 cred = credentials.Certificate(cred_dict)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
-# ---------------- Routes ----------------
 
-# Landing page
-@app.route("/")
-def home():
-    return render_template("index.html")
+# OpenAI setup
+openai.api_key = os.environ.get("OPENAI_API_KEY")
 
-# Confession form page
+def generate_confession_image(confession_text):
+    prompt = f"Create a stylish NGL-style Instagram post with the text: '{confession_text}'"
+    response = openai.images.generate(
+        model="gpt-image-1",
+        prompt=prompt,
+        size="512x512"
+    )
+    image_url = response.data[0].url
+    return image_url
+
+# Confession submission
 @app.route("/u/<username>", methods=["GET", "POST"])
 def confession(username):
     if request.method == "POST":
-        msg = request.form.get("message")
-        if msg:
-            db.collection("messages").document().set({
-                "username": username,
-                "content": msg
-            })
-            return render_template("confession.html", username=username, success=True)
-    return render_template("confession.html", username=username, success=False)
+        confession_text = request.form.get("message")
+        image_url = generate_confession_image(confession_text)
+        db.collection("messages").document().set({
+            "username": username,
+            "message": confession_text,
+            "image": image_url
+        })
+        return redirect(url_for("dashboard", username=username))
+    return render_template("confession_form.html", username=username)
 
-# User dashboard
+# Dashboard
 @app.route("/dashboard/<username>")
 def dashboard(username):
-    msgs = db.collection("messages").where("username", "==", username).stream()
-    messages = [m.to_dict()["content"] for m in msgs]
-    return render_template("dashboard.html", username=username, messages=messages)
+    messages = db.collection("messages").where("username", "==", username).stream()
+    messages_list = [{"text": m.to_dict()["message"], "image": m.to_dict()["image"]} for m in messages]
+    return render_template("dashboard.html", messages=messages_list)
 
-# Admin login
-@app.route("/admin", methods=["GET", "POST"])
-def admin_login():
-    if request.method == "POST":
-        user = request.form.get("username")
-        pwd = request.form.get("password")
-        if user == "saugiiman" and pwd == "saugiiman04":
-            session["admin"] = True
-            return redirect(url_for("admin_dashboard"))
-        else:
-            return render_template("admin_login.html", error="Invalid credentials")
-    return render_template("admin_login.html", error=None)
-
-# Admin dashboard
-@app.route("/admin/dashboard")
-def admin_dashboard():
-    if not session.get("admin"):
-        return redirect(url_for("admin_login"))
-    msgs = db.collection("messages").stream()
-    messages = [(m.to_dict()["username"], m.to_dict()["content"]) for m in msgs]
-    return render_template("admin_dashboard.html", messages=messages)
-
-# Admin logout
-@app.route("/admin/logout")
-def admin_logout():
-    session.pop("admin", None)
-    return redirect(url_for("admin_login"))
+# Admin Panel
+@app.route("/admin")
+def admin():
+    messages = db.collection("messages").stream()
+    all_messages = [{"username": m.to_dict()["username"], "text": m.to_dict()["message"], "image": m.to_dict()["image"]} for m in messages]
+    return render_template("admin.html", messages=all_messages)
 
 if __name__ == "__main__":
     app.run(debug=True)
