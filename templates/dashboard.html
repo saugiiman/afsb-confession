@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>@{{ username }} Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500 p-6">
+  <div class="max-w-2xl mx-auto bg-white/90 backdrop-blur-lg rounded-2xl shadow-lg p-6">
+    <h2 class="text-2xl font-bold text-gray-800 mb-4">@{{ username }}’s Confessions 💌</h2>
+    
+    {% if messages %}
+      <div class="space-y-4">
+        {% for msg in messages %}
+          <div class="p-4 bg-gray-100 rounded-xl shadow">{{ msg }}</div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="text-gray-600">No confessions yet 🤔</p>
+    {% endif %}
+  </div>
+</body>
+</html>
