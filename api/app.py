@@ -1,16 +1,26 @@
+import os
+import json
 from flask import Flask, render_template, request, redirect, url_for, session
 import firebase_admin
 from firebase_admin import credentials, firestore
 
 # ---------------- Flask setup ----------------
 app = Flask(__name__, template_folder="../templates", static_folder="../static")
-app.secret_key = "supersecretkey"  # for admin login
+app.secret_key = "supersecretkey"
 
 # ---------------- Firebase setup ----------------
-cred = credentials.Certificate("serviceAccountKey.json")
+cred_json = os.environ.get("FIREBASE_CREDENTIALS")
+if not cred_json:
+    raise Exception("FIREBASE_CREDENTIALS environment variable not set!")
+
+try:
+    cred_dict = json.loads(cred_json)
+except json.JSONDecodeError as e:
+    raise Exception(f"Failed to parse FIREBASE_CREDENTIALS: {e}")
+
+cred = credentials.Certificate(cred_dict)
 firebase_admin.initialize_app(cred)
 db = firestore.client()
-
 # ---------------- Routes ----------------
 
 # Landing page
