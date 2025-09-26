@@ -1,14 +1,15 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, url_for, session
 import sqlite3
 import os
 
 app = Flask(__name__)
+app.secret_key = "supersecretkey"  # for admin session
+
+DB_NAME = "messages.db"
 
 # ---------------------------
 # Database setup
 # ---------------------------
-DB_NAME = "messages.db"
-
 def init_db():
     if not os.path.exists(DB_NAME):
         conn = sqlite3.connect(DB_NAME)
@@ -45,10 +46,10 @@ def confession(username):
             c.execute("INSERT INTO messages (username, content) VALUES (?, ?)", (username, msg))
             conn.commit()
             conn.close()
-            return "✅ Message sent! <a href='/u/{}'>Back</a>".format(username)
-    return render_template("confession.html", username=username)
+            return render_template("confession.html", username=username, success=True)
+    return render_template("confession.html", username=username, success=False)
 
-# Dashboard to view messages
+# User dashboard
 @app.route("/dashboard/<username>")
 def dashboard(username):
     conn = sqlite3.connect(DB_NAME)
@@ -57,6 +58,37 @@ def dashboard(username):
     messages = [row[0] for row in c.fetchall()]
     conn.close()
     return render_template("dashboard.html", username=username, messages=messages)
+
+# Admin login
+@app.route("/admin", methods=["GET", "POST"])
+def admin_login():
+    if request.method == "POST":
+        user = request.form.get("username")
+        pwd = request.form.get("password")
+        if user == "saugiiman" and pwd == "saugiiman04":
+            session["admin"] = True
+            return redirect(url_for("admin_dashboard"))
+        else:
+            return render_template("admin_login.html", error="Invalid credentials")
+    return render_template("admin_login.html", error=None)
+
+# Admin dashboard
+@app.route("/admin/dashboard")
+def admin_dashboard():
+    if not session.get("admin"):
+        return redirect(url_for("admin_login"))
+    conn = sqlite3.connect(DB_NAME)
+    c = conn.cursor()
+    c.execute("SELECT username, content FROM messages ORDER BY id DESC")
+    messages = c.fetchall()
+    conn.close()
+    return render_template("admin_dashboard.html", messages=messages)
+
+# Admin logout
+@app.route("/admin/logout")
+def admin_logout():
+    session.pop("admin", None)
+    return redirect(url_for("admin_login"))
 
 if __name__ == "__main__":
     app.run(debug=True)
