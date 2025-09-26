@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Send Message</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-500 via-purple-500 to-indigo-500">
+  <div class="w-full max-w-md bg-white/90 backdrop-blur-lg rounded-2xl shadow-lg p-6 text-center">
+    <img src="https://ui-avatars.com/api/?name={{ username }}" class="w-20 h-20 rounded-full mx-auto mb-4 shadow-md">
+    <h2 class="text-2xl font-bold text-gray-800 mb-2">@{{ username }}</h2>
+    <p class="text-gray-600 mb-6">Send me an anonymous message 👇</p>
+    
+    <form method="POST" class="space-y-4">
+      <textarea name="message" rows="4" placeholder="Type your message here..."
+        class="w-full px-4 py-3 rounded-xl border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 resize-none"
+        required></textarea>
+      <button type="submit"
+        class="w-full bg-pink-500 hover:bg-pink-600 text-white py-3 rounded-xl font-semibold shadow-md transition">
+        Send 💌
+      </button>
+    </form>
+  </div>
+</body>
+</html>
